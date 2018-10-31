@@ -1,0 +1,9 @@
+# ignore all log files
+*.log
+index.js
+
+# ignore all dependencies
+/node_modules/
+
+
+

@@ -1,0 +1,34 @@
+{
+  "name": "gitlab-activity-generator",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha modules/**/*.test.js",
+    "lint": "./node_modules/.bin/eslint modules/**/*.js modules/*.js *.js --fix"
+  },
+  "author": "Darshan Shah",
+  "license": "ISC",
+  "dependencies": {
+    "act-streams-client": "github:gettodarshanshah/activity-generator-library#master",
+    "node-fetch": "^2.2.0",
+    "node-persistent-queue": "^0.2.0",
+    "socket.io-client": "^2.1.1",
+    "tail": "^2.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "mocha": "^5.2.0",
+    "webpack": "^4.20.2"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.stackroute.in/activity-streams/gitlab-acitivities-generator.git"
+  },
+  "description": ""
+}
