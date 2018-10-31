@@ -4,6 +4,6 @@ index.js
 
 # ignore all dependencies
 /node_modules/
-
+/sql-lite/
 
 

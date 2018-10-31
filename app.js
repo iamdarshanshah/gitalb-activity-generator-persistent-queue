@@ -11,55 +11,45 @@ const tail = new Tail('./log-files/production_json.log');
 
 console.log('docker-running');
 
-
+//Emitted when the sqlite database has been opened successfully (after calling .open() method)
 q.on('open', function () {
   console.log('Opening SQLite DB');
   console.log('Queue contains ' + q.getLength() + ' job/s');
 });
 
-
+//Emitted when a task has been added to the queue (after calling .add() method)
 q.on('add', function (task) {
   console.log('Adding task: ' + JSON.stringify(task));
   console.log('Queue contains ' + q.getLength() + ' job/s');
 
 });
 
-
-q.on('delete', function (task) {
-  console.log('deleting task: ' + JSON.stringify(task));
-  console.log('Queue contains ' + q.getLength() + ' job/s');
-
-});
-
-
-
+//Emitted when the queue starts processing tasks (after calling .start() method)
 q.on('start', function () {
   console.log('Starting queue');
 });
 
+//Emitted when the next task is to be executed.
 q.on('next', function (task) {
   console.log('Queue contains ' + q.getLength() + ' job/s');
   console.log('Process task: ');
   console.log(JSON.stringify(task));
 
-
   console.log(`in next----------------------------------------------------\n`);
 
-  client.push('activities', task, (ack) => { q.done() });
-
-  q.done();
-
-  // Must tell Queue that we have finished this task
-  // This call will schedule the next task (if there is one)
+  client.push('activities', task, (ack) => {
+    if (ack === 'received') {
+      // tell Queue that we have finished this task
+      // This call will schedule the next task (if there is one)
+      q.done();
+    }
+  });
 
 });
-
 
 //opening queue
 q.open()
   .then(function () {
-    //client.on
-    //performing operations after receiving ready event from server
     //Streaming Log File Data
     tail.on('line', (data) => {
       const activity = createActStream(JSON.parse(data));
@@ -73,12 +63,12 @@ q.open()
     // error handling
     tail.on('error', error => error);
   })
-  .catch(function (err) {
+  .catch(function (err) { //error handling
     console.log('Error occurred:');
     console.log(err);
     process.exit(1);
   });
 
-
+//sending token to the server
 console.log(require('./configure.json').access_token);
 client.configure(require('./configure.json').access_token);

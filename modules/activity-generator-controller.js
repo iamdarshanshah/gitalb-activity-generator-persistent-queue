@@ -6,6 +6,8 @@ const deleteProjectActivity = require('./gitlab-activities-generator/projects/de
 const createGroupActivity = require('./gitlab-activities-generator/groups/create-group-activity');
 const createProjectActivity = require('./gitlab-activities-generator/projects/create-project-activity');
 
+
+//this function will create relevent activities after parsing log-file
 function createActStream(line) {
 
   const data = {
@@ -30,7 +32,6 @@ function createActStream(line) {
     };
     activity.eventType = 'ISSUE';
     activity.actstream = reopenIssueActivity(line, data);
-    //client.push('activities', activity);
     return activity;
   }
   else if (line.method === 'PUT' && line.controller === 'Projects::IssuesController'
@@ -41,7 +42,6 @@ function createActStream(line) {
     };
     activity.eventType = 'ISSUE';
     activity.actstream = closeIssueActivity(line, data);
-    //client.push('activities', activity);
     return activity;
   }
   else if (line.method === 'DELETE' && line.controller === 'GroupsController' && line.action === 'destroy') {
@@ -51,7 +51,6 @@ function createActStream(line) {
     };
     activity.eventType = 'GROUP';
     activity.actstream = deleteGroupActivity(line, data);
-    // client.push('activities', activity);
     return activity;
   }
 
@@ -62,7 +61,6 @@ function createActStream(line) {
     };
     activity.eventType = 'PROJECT';
     activity.actstream = deleteProjectActivity(line, data);
-    // client.push('activities', activity);
     return activity;
   }
 
@@ -73,7 +71,6 @@ function createActStream(line) {
     };
     activity.eventType = 'PROJECT';
     activity.actstream = createProjectActivity(line, data);
-    // client.push('activities', activity);
     return activity;
   }
 
@@ -84,7 +81,6 @@ function createActStream(line) {
     };
     activity.eventType = 'GROUP';
     activity.actstream = createGroupActivity(line, data);
-    // client.push('activities', activity);
     return activity;
   }
 }
