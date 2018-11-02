@@ -17,7 +17,7 @@ services:
     depends_on :
     - gitlab
     volumes:
-    -/home/darshan/workspace/POCs/persistent-queue-G-A-G/gitlab-acitivities-generator/log-files:/usr/src/app/log-files:Z
+    - /home/darshan/workspace/POCs/persistent-queue-G-A-G/gitlab-acitivities-generator/log-files:/usr/src/app/log-files:Z
 
   postgresql:
     restart: always
