@@ -9,7 +9,7 @@
   "author": "Darshan Shah",
   "license": "ISC",
   "dependencies": {
-    "act-streams-client": "github:gettodarshanshah/activity-generator-library#master",
+    "act-streams-client": "git+https://github.com/gettodarshanshah/client-library-beta.git",
     "node-fetch": "^2.2.0",
     "node-persistent-queue": "^0.2.0",
     "socket.io-client": "^2.1.1",

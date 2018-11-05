@@ -1,9 +1,7 @@
 const { Tail } = require('tail');
 let Client = require('act-streams-client');
 const { ip } = require('./config.js');
-const client = new Client(ip);
-var Queue = require('node-persistent-queue');
-var q = new Queue('./sql-lite/sqllite.db');
+const client = new Client(ip,'./sql-lite/sqllite.db');
 
 const createActStream = require('./modules/activity-generator-controller');
 
@@ -12,26 +10,26 @@ const tail = new Tail('./log-files/production_json.log');
 console.log('docker-running');
 
 //Emitted when the sqlite database has been opened successfully (after calling .open() method)
-q.on('open', function () {
+client.on('open', function () {
   console.log('Opening SQLite DB');
-  console.log('Queue contains ' + q.getLength() + ' job/s');
+  console.log('Queue contains ' + client.queueLength() + ' job/s');
 });
 
 //Emitted when a task has been added to the queue (after calling .add() method)
-q.on('add', function (task) {
+client.on('add', function (task) {
   console.log('Adding task: ' + JSON.stringify(task));
-  console.log('Queue contains ' + q.getLength() + ' job/s');
+  console.log('Queue contains ' + client.queueLength() + ' job/s');
 
 });
 
 //Emitted when the queue starts processing tasks (after calling .start() method)
-q.on('start', function () {
+client.on('start', function () {
   console.log('Starting queue');
 });
 
 //Emitted when the next task is to be executed.
-q.on('next', function (task) {
-  console.log('Queue contains ' + q.getLength() + ' job/s');
+client.on('next', function (task) {
+  console.log('Queue contains ' + client.queueLength() + ' job/s');
   console.log('Process task: ');
   console.log(JSON.stringify(task));
 
@@ -41,14 +39,14 @@ q.on('next', function (task) {
     if (ack === 'received') {
       // tell Queue that we have finished this task
       // This call will schedule the next task (if there is one)
-      q.done();
+      client.done();
     }
   });
 
 });
 
 //opening queue
-q.open()
+client.openQueue()
   .then(function () {
     //Streaming Log File Data
     tail.on('line', (data) => {
@@ -56,8 +54,8 @@ q.open()
       console.log('activity\n', activity);
       // client.push('activities', activity);
       if (activity !== undefined) {
-        q.add(activity)
-          .start(activity)
+        client.addToQueue(activity);
+        client.startQueue(activity);
       }
     })
     // error handling
