@@ -18,6 +18,7 @@ services:
     - gitlab
     volumes:
     - /home/darshan/workspace/POCs/persistent-queue-G-A-G/gitlab-acitivities-generator/log-files:/usr/src/app/log-files:Z
+    - /home/darshan/workspace/POCs/persistent-queue-G-A-G/gitlab-acitivities-generator/sql-lite:/usr/src/app/sql-lite:Z
 
   postgresql:
     restart: always

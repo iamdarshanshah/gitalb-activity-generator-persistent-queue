@@ -7,7 +7,7 @@ const createActStream = require('./modules/activity-generator-controller');
 
 const tail = new Tail('./log-files/production_json.log');
 
-console.log('docker-running');
+// console.log('docker-running');
 
 //Emitted when the sqlite database has been opened successfully (after calling .open() method)
 client.on('open', function () {
