@@ -69,4 +69,4 @@ client.openQueue()
 
 //sending token to the server
 console.log(require('./configure.json').access_token);
-client.configure(require('./configure.json').access_token);
+client.configure(require('./configure.json').access_token,(ack)=>{console.log(ack)});
