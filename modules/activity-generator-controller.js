@@ -5,7 +5,9 @@ const deleteGroupActivity = require('./gitlab-activities-generator/groups/delete
 const deleteProjectActivity = require('./gitlab-activities-generator/projects/delete-project-activity');
 const createGroupActivity = require('./gitlab-activities-generator/groups/create-group-activity');
 const createProjectActivity = require('./gitlab-activities-generator/projects/create-project-activity');
-
+const createLabelActivity = require('./gitlab-activities-generator/labels/create-label-activity');
+const deleteLabelActivity = require('./gitlab-activities-generator/labels/delete-label-activity');
+const updateLabelActivity = require('./gitlab-activities-generator/labels/update-label-activity');
 
 //this function will create relevent activities after parsing log-file
 function createActStream(line) {
@@ -83,6 +85,39 @@ function createActStream(line) {
     activity.actstream = createGroupActivity(line, data);
     return activity;
   }
+
+
+  else if (line.method === 'POST' && line.action === 'create' && line.controller === 'Projects::LabelsController') {
+    const activity = {
+      eventType: '',
+      actstream: ''
+    };
+    activity.eventType = 'LABEL';
+    activity.actstream = createLabelActivity(line, data);
+    return activity;
+  }
+
+
+  else if (line.method === 'DELETE' && line.controller === 'Projects::LabelsController' && line.action === 'destroy') {
+    const activity = {
+      eventType: '',
+      actstream: ''
+    };
+    activity.eventType = 'LABEL';
+    activity.actstream = deleteLabelActivity(line, data);
+    return activity;
+  }
+
+  else if (line.method === 'PATCH' && line.controller === 'Projects::LabelsController' && line.action === 'update') {
+    const activity = {
+      eventType: '',
+      actstream: ''
+    };
+    activity.eventType = 'LABEL';
+    activity.actstream = updateLabelActivity(line, data);
+    return activity;
+  }
+
 }
 
 module.exports = createActStream;
