@@ -1,11 +1,13 @@
 const { Tail } = require('tail');
 let Client = require('act-streams-client');
 const { ip } = require('./config.js');
-const client = new Client(ip,'./sql-lite/sqllite.db');
+const client = new Client(ip, './sql-lite/sqllite.db');
 
 const createActStream = require('./modules/activity-generator-controller');
 
 const tail = new Tail('./log-files/production_json.log');
+
+let counter = 0;
 
 // console.log('docker-running');
 
@@ -50,6 +52,16 @@ client.openQueue()
   .then(function () {
     //Streaming Log File Data
     tail.on('line', (data) => {
+      //sending token to the server
+      if (counter === 0) {
+        client.configure(require('./configure.json').access_token, (ack) => {
+          console.log('acknowledgement :- ', ack);
+          if (ack === 'received') {
+            counter += 1;
+          }
+        });
+      }
+      //processing activities
       const activity = createActStream(JSON.parse(data));
       console.log('activity\n', activity);
       // client.push('activities', activity);
@@ -66,7 +78,3 @@ client.openQueue()
     console.log(err);
     process.exit(1);
   });
-
-//sending token to the server
-console.log(require('./configure.json').access_token);
-client.configure(require('./configure.json').access_token,(ack)=>{console.log(ack)});
