@@ -14,8 +14,6 @@ services:
     container_name : gitalb-activity-generator
     restart : always
     build : .
-    ports :
-    - "4000:4000"
     depends_on :
     - gitlab
     volumes:
